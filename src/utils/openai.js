@@ -1,10 +1,8 @@
 import axios from "axios";
 
-const call_open_ai = async (prompt) => {
-  const openai_api_key = process.env.REACT_APP_OPENAI_API_KEY;
-  console.log(openai_api_key);
+const call_open_ai = async (prompt, openai_api_key, model) => {
   const request = {
-    model: "gpt-3.5-turbo-0301",
+    model: model,
     messages: prompt.messages,
     max_tokens: 2000,
     temperature: 1,
@@ -21,7 +19,10 @@ const call_open_ai = async (prompt) => {
       },
       data: request,
     });
-    return res.data.choices[0].message.content;
+    return res.data.choices[0].message.content.replace(
+      /(\r\n|\n|\r)/gm,
+      "<br/>"
+    );
   } catch (error) {
     console.error(error);
     throw error;
